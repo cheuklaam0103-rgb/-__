@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數字比大小：位數小幫手 (更新版)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f9f9; /* 柔和不刺眼的背景色 */
+            color: #2c3e50;
+            font-size: 16pt;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 3px solid #bdc3c7;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22pt;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .intro {
+            font-size: 14pt;
+            background-color: #eef7fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .question-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 15px;
+            background: #e8f4f8;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        .card-row {
+            display: table;
+            width: 100%;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .card-cell {
+            display: table-cell;
+            width: 33.33%;
+            padding: 0 10px;
+        }
+
+        .num-box {
+            background: #fff;
+            border: 3px solid #7f8c8d;
+            border-radius: 12px;
+            padding: 12px 5px;
+            font-size: 28pt;
+            font-weight: bold;
+            letter-spacing: 5px;
+            display: block;
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.05);
+        }
+
+        .hundreds {
+            background-color: #ffdae9; /* 柔和粉紅 */
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+
+        .tens {
+            background-color: #fff4cc; /* 柔和黃色 */
+            border-bottom: 5px solid #f1c40f;
+            padding-bottom: 2px;
+        }
+
+        /* 針對文字部分的顏色強調 */
+        .text-tens-highlight {
+            color: #b78a00; 
+            background-color: #fff9db;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            border-bottom: 2px solid #f1c40f;
+        }
+
+        .input-line {
+            margin: 18px 0;
+            font-size: 16pt;
+            display: block;
+        }
+
+        .input-number {
+            width: 80px;
+            height: 45px;
+            font-size: 16pt;
+            text-align: center;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            margin: 0 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .input-number:focus {
+            border-color: #3498db;
+            background-color: #f7fcff;
+            outline: none;
+        }
+
+        .input-large {
+            width: 120px;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            max-width: 260px;
+            margin: 25px auto 5px auto;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15pt;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 25px;
+        }
+
+        .correct {
+            color: #27ae60;
+            background-color: #e8f8f5;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .incorrect {
+            color: #c0392b;
+            background-color: #fdedec;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>數字大小比一比 ── 位數小偵探</h1>
+        
+        <div class="intro">
+            <strong>💡 尋寶秘訣：</strong><br>
+            當三個數字的 <span class="hundreds">百位數字</span> 一模一樣時，我們就看有顏色和畫底線的 <span class="text-tens-highlight">十位數字</span> 來比大小喔！
+        </div>
+
+        <!-- 題組一：課本原題 -->
+        <div class="question-card" id="q1-card">
+            <div class="question-title">第 1 題：熱身挑戰</div>
+            <p>先找出各個數字的 <span class="text-tens-highlight">十位數字</span> 是多少，填在格子裡：</p>
+            
+            <div class="card-row">
+                <div class="card-cell"><span class="num-box"><span class="hundreds">7</span><span class="tens">5</span>2</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">7</span><span class="tens">8</span>6</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">7</span><span class="tens">4</span>9</span></div>
+            </div>
+
+            <div class="input-line">• 752 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q1_t1" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 786 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q1_t2" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 749 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q1_t3" class="input-number" min="0" max="9" placeholder="?"></div>
+            
+            <div class="input-line" style="margin-top:25px; border-top:1px dashed #ccc; padding-top:15px;">
+                • 比一比十位數的大小關係：
+                <input type="number" id="q1_c1" class="input-number" placeholder="大"> &gt; 
+                <input type="number" id="q1_c2" class="input-number" placeholder="中"> &gt; 
+                <input type="number" id="q1_c3" class="input-number" placeholder="小">
+            </div>
+
+            <div class="input-line" style="background: #fafafa; padding: 12px; border-radius: 8px; border: 1px solid #eee;">
+                • 👑 <strong>最高</strong>的分數是：<input type="number" id="q1_max" class="input-number input-large" placeholder="三位數"><br>
+                • 💧 <strong>最低</strong>的分數是：<input type="number" id="q1_min" class="input-number input-large" placeholder="三位數">
+            </div>
+
+            <button class="btn-submit" onclick="checkQ1()">檢查第 1 題</button>
+            <div id="q1_feedback" class="feedback"></div>
+        </div>
+
+        <!-- 題組二：新題目 -->
+        <div class="question-card" id="q2-card">
+            <div class="question-title">第 2 題：進階挑戰</div>
+            <p>這三個數字的百位都是 <span class="hundreds">5</span>，請找出它們的 <span class="text-tens-highlight">十位數字</span>：</p>
+            
+            <div class="card-row">
+                <div class="card-cell"><span class="num-box"><span class="hundreds">5</span><span class="tens">3</span>1</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">5</span><span class="tens">9</span>4</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">5</span><span class="tens">6</span>2</span></div>
+            </div>
+
+            <div class="input-line">• 531 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q2_t1" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 594 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q2_t2" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 562 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q2_t3" class="input-number" min="0" max="9" placeholder="?"></div>
+            
+            <div class="input-line" style="margin-top:25px; border-top:1px dashed #ccc; padding-top:15px;">
+                • 比一比十位數的大小關係：
+                <input type="number" id="q2_c1" class="input-number" placeholder="大"> &gt; 
+                <input type="number" id="q2_c2" class="input-number" placeholder="中"> &gt; 
+                <input type="number" id="q2_c3" class="input-number" placeholder="小">
+            </div>
+
+            <div class="input-line" style="background: #fafafa; padding: 12px; border-radius: 8px; border: 1px solid #eee;">
+                • 👑 <strong>最高</strong>的分數是：<input type="number" id="q2_max" class="input-number input-large" placeholder="三位數"><br>
+                • 💧 <strong>最低</strong>的分數是：<input type="number" id="q2_min" class="input-number input-large" placeholder="三位數">
+            </div>
+
+            <button class="btn-submit" onclick="checkQ2()">檢查第 2 題</button>
+            <div id="q2_feedback" class="feedback"></div>
+        </div>
+
+        <!-- 題組三：新題目 -->
+        <div class="question-card" id="q3-card">
+            <div class="question-title">第 3 題：大師挑戰</div>
+            <p>最後一關囉！請找出它們的 <span class="text-tens-highlight">十位數字</span> 並比大小：</p>
+            
+            <div class="card-row">
+                <div class="card-cell"><span class="num-box"><span class="hundreds">9</span><span class="tens">2</span>8</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">9</span><span class="tens">1</span>5</span></div>
+                <div class="card-cell"><span class="num-box"><span class="hundreds">9</span><span class="tens">7</span>3</span></div>
+            </div>
+
+            <div class="input-line">• 928 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q3_t1" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 915 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q3_t2" class="input-number" min="0" max="9" placeholder="?"></div>
+            <div class="input-line">• 973 的 <span class="text-tens-highlight">十位數字</span> 是：<input type="number" id="q3_t3" class="input-number" min="0" max="9" placeholder="?"></div>
+            
+            <div class="input-line" style="margin-top:25px; border-top:1px dashed #ccc; padding-top:15px;">
+                • 比一比十位數的大小關係：
+                <input type="number" id="q3_c1" class="input-number" placeholder="大"> &gt; 
+                <input type="number" id="q3_c2" class="input-number" placeholder="中"> &gt; 
+                <input type="number" id="q3_c3" class="input-number" placeholder="小">
+            </div>
+
+            <div class="input-line" style="background: #fafafa; padding: 12px; border-radius: 8px; border: 1px solid #eee;">
+                • 👑 <strong>最高</strong>的分數是：<input type="number" id="q3_max" class="input-number input-large" placeholder="三位數"><br>
+                • 💧 <strong>最低</strong>的分數是：<input type="number" id="q3_min" class="input-number input-large" placeholder="三位數">
+            </div>
+
+            <button class="btn-submit" onclick="checkQ3()">檢查第 3 題</button>
+            <div id="q3_feedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        function checkQ1() {
+            const t1 = document.getElementById('q1_t1').value.trim();
+            const t2 = document.getElementById('q1_t2').value.trim();
+            const t3 = document.getElementById('q1_t3').value.trim();
+            const c1 = document.getElementById('q1_c1').value.trim();
+            const c2 = document.getElementById('q1_c2').value.trim();
+            const c3 = document.getElementById('q1_c3').value.trim();
+            const max = document.getElementById('q1_max').value.trim();
+            const min = document.getElementById('q1_min').value.trim();
+            const fb = document.getElementById('q1_feedback');
+
+            if(!t1 || !t2 || !t3 || !c1 || !c2 || !c3 || !max || !min) {
+                fb.innerHTML = "<span class='incorrect'>⚠️ 格子還沒填完喔！</span>";
+                return;
+            }
+            if(t1==='5' && t2==='8' && t3==='4' && c1==='8' && c2==='5' && c3==='4' && max==='786' && min==='749') {
+                fb.innerHTML = "<span class='correct'>👍 太棒了！第 1 題完全正確！</span>";
+            } else {
+                fb.innerHTML = "<span class='incorrect'>再試試看喔！提示：十位數字是 5、8、4。最大的數是 786。</span>";
+            }
+        }
+
+        function checkQ2() {
+            const t1 = document.getElementById('q2_t1').value.trim();
+            const t2 = document.getElementById('q2_t2').value.trim();
+            const t3 = document.getElementById('q2_t3').value.trim();
+            const c1 = document.getElementById('q2_c1').value.trim();
+            const c2 = document.getElementById('q2_c2').value.trim();
+            const c3 = document.getElementById('q2_c3').value.trim();
+            const max = document.getElementById('q2_max').value.trim();
+            const min = document.getElementById('q2_min').value.trim();
+            const fb = document.getElementById('q2_feedback');
+
+            if(!t1 || !t2 || !t3 || !c1 || !c2 || !c3 || !max || !min) {
+                fb.innerHTML = "<span class='incorrect'>⚠️ 格子還沒填完喔！</span>";
+                return;
+            }
+            if(t1==='3' && t2==='9' && t3==='6' && c1==='9' && c2==='6' && c3==='3' && max==='594' && min==='531') {
+                fb.innerHTML = "<span class='correct'>👍 超厲害！第 2 題也答對了！</span>";
+            } else {
+                fb.innerHTML = "<span class='incorrect'>再檢查一下喔！提示：十位數字是 3、9、6。最大的數是 594。</span>";
+            }
+        }
+
+        function checkQ3() {
+            const t1 = document.getElementById('q3_t1').value.trim();
+            const t2 = document.getElementById('q3_t2').value.trim();
+            const t3 = document.getElementById('q3_t3').value.trim();
+            const c1 = document.getElementById('q3_c1').value.trim();
+            const c2 = document.getElementById('q3_c2').value.trim();
+            const c3 = document.getElementById('q3_c3').value.trim();
+            const max = document.getElementById('q3_max').value.trim();
+            const min = document.getElementById('q3_min').value.trim();
+            const fb = document.getElementById('q3_feedback');
+
+            if(!t1 || !t2 || !t3 || !c1 || !c2 || !c3 || !max || !min) {
+                fb.innerHTML = "<span class='incorrect'>⚠️ 格子還沒填完喔！</span>";
+                return;
+            }
+            if(t1==='2' && t2==='1' && t3==='7' && c1==='7' && c2==='2' && c3==='1' && max==='973' && min==='915') {
+                fb.innerHTML = "<span class='correct'>🎉 太強了！全部題目都挑戰成功了！</span>";
+            } else {
+                fb.innerHTML = "<span class='incorrect'>再看一眼喔！提示：十位數字是 2、1、7。最大的數是 973。</span>";
+            }
+        }
+    </script>
+</body>
+</html>
